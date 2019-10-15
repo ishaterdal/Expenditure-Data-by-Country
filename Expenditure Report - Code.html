@@ -1,0 +1,417 @@
+<html>
+  <head>
+    <!--Loading the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+     //Loading the Google Corechart Package using the current version
+     google.charts.load('current', {'packages':['corechart']});
+
+      // Setting callbacks that run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(Charts);
+      google.charts.setOnLoadCallback(Edu_Growth_Chart);
+      google.charts.setOnLoadCallback(Health_Growth_Chart);
+
+      function Charts() {
+      DrawChart('HealthSpending', 'SELECT A,B,C,D,E,F',HealthSpendingResponseHandler);
+      DrawChart('EducationSpending', 'SELECT A,B,C,D,E,F',EducationSpendingResponseHandler);
+      DrawChart('MilitarySpending', 'SELECT A,B,C,D,E,F',MilitarySpendingResponseHandler);
+      DrawChart('MilitarySpending', 'SELECT A,F',TopMilitarySpendingResponseHandler);
+      DrawChart('GDP', 'SELECT A,B,C,D,E,F',GDPResponseHandler);
+      DrawChart('EduGDP', 'SELECT A,B,C,D,E,F,G,H,I,J,K',eduGDPResponseHandler);
+      DrawChart('HealthGDP', 'SELECT A,B,C,D,E,F,G,H,I,J,K',healthGDPResponseHandler);
+      DrawChart('EduHealthtoMilitary', 'SELECT A,B,C,D',EduHealthToMilitaryResponseHandler);
+      DrawChart('EducationSpending', 'SELECT A,G', eduPercentGrowthResponseHandler);
+      DrawChart('HealthSpending', 'SELECT A,G', healthPercentGrowthResponseHandler);
+      DrawChart('HealthGDPpercapita', 'SELECT A,B,C', HealthGDPpercapitaResponseHandler);
+      DrawChart('EduGDPpercapita', 'SELECT A,B,C', EducationGDPpercapitaResponseHandler);
+    }; //Charts
+    
+      function DrawChart(sheetName, query, responseHandler) {
+        var queryString = encodeURIComponent(query);
+        var query = new google.visualization.Query(
+        'https://docs.google.com/spreadsheets/d/1dJBGkZ0cAjT3KDdmPt1XFVpi_dNYYNg6-Q7Pc9a1bw0/gviz/tq?sheet=' + sheetName + '&headers=1&tq=' +queryString
+        );
+      
+        query.send(responseHandler);
+      } //DrawChart
+
+      function HealthSpendingResponseHandler(response){
+        //get the data
+        var data = response.getDataTable();
+        data.sort({column: 5, desc:true});
+      
+        //set options
+        var options = {height: 400,
+                      vAxis: {title: 'Spending in Billions ($)'},
+                      hAxis: {title: 'Country'}};
+  
+        //create the chart and draw it
+        var chart1 = new google.visualization.ColumnChart(document.getElementById('chart1_div'));
+        chart1.draw(data, options);
+      
+      } //HealthSpendingResponseHandler
+
+
+      function EducationSpendingResponseHandler(response){
+        //get the data
+        var data = response.getDataTable();
+        data.sort({column: 5, desc:true});
+      
+        //set options
+        var options = {height: 400,
+                      vAxis: {title: 'Spending in Billions ($)'},
+                      hAxis: {title: 'Country'}};
+  
+        //create the chart and draw it
+        var chart2 = new google.visualization.ColumnChart(document.getElementById('chart2_div'));
+        chart2.draw(data, options);
+      
+      } //EducationSpendingResponseHandler
+
+
+      function MilitarySpendingResponseHandler(response){
+        //get the data
+        var data = response.getDataTable();
+        data.sort({column: 5, desc:true});
+      
+        //set options
+        var options = {height: 400,
+                      vAxis: {title: 'Spending in Billions ($)'},
+                      hAxis: {title: 'Country'}};
+  
+        //create the chart and draw it
+        var chart3 = new google.visualization.ColumnChart(document.getElementById('chart3_div'));
+        chart3.draw(data, options);
+      
+      } //MilitarySpendingResponseHandler
+
+
+    function TopMilitarySpendingResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      
+      //set the options
+      var options = {
+          height: 400,
+          colorAxis: {colors: ['#e7711c', '#4374e0']}, //orange to blue
+          title: 'Top 10 Countries by Military Spending'
+      };
+      
+      //create the chart and draw it
+      var chart4 = new google.visualization.GeoChart(document.getElementById('chart4_div'));
+      chart4.draw(data, options); 
+      
+    } //TopMilitarySpendingResponseHandler
+
+    function GDPResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      data.sort({column: 5, desc:true});
+      
+      //set options
+      var options = {height: 400,
+               vAxis: {title: 'Spending in Billions ($)'},
+               hAxis: {title: 'Country'}};
+  
+      //create the chart and draw it
+      var chart5 = new google.visualization.ColumnChart(document.getElementById('chart5_div'));
+      chart5.draw(data, options);
+    }
+
+
+    function eduGDPResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+
+      var options = {
+          hAxis: {title: 'Year'},
+          vAxis: {title: 'Percent of GDP'},
+          //legend: {position: 'bottom' },
+          curveType: 'function'
+        };
+
+        var chart6 = new google.visualization.LineChart(document.getElementById('chart6_div'));
+
+        chart6.draw(data, options);
+    }
+
+    function healthGDPResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+
+      var options = {
+          hAxis: {title: 'Year'},
+          vAxis: {title: 'Percent of GDP'},
+          //legend: {position: 'bottom' },
+          curveType: 'function'
+        };
+
+        var chart11 = new google.visualization.LineChart(document.getElementById('chart11_div'));
+
+        chart11.draw(data, options);
+    }
+
+    function EduHealthToMilitaryResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      
+      //set options
+      var options = {
+        width: 1000,
+        height: 400,
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '90%' },
+        vAxis: {title: 'Country'},
+        hAxis: {title: 'Spending in Billions ($)'},
+        isStacked: true
+      };
+  
+      //create the chart and draw it
+      var chart7 = new google.visualization.BarChart(document.getElementById('chart7_div'));
+      chart7.draw(data, options);
+    }
+
+      //education diff chart to demonstrate growth
+      function Edu_Growth_Chart() {
+        var oldData = google.visualization.arrayToDataTable([
+          ['Country', 'Education Spending 2010'],
+          ['USA', 811.0704723],
+          ['India', 56.71378885],
+          ['Germany', 167.9050947],
+          ['UK',  140.8669374],
+          ['Japan', 207.4550653],
+          ['France',  150.1906044],
+          ['Brazil',  124.7747393],
+          ['Australia', 63.68839611],
+          ['Italy', 92.49081853],
+          ['Mexico', 54.91046455]
+        ]);
+
+        var newData = google.visualization.arrayToDataTable([
+          ['Country', 'Education Spending 2014'],
+          ['USA', 808.7378932],
+          ['India', 81.84612505],
+          ['Germany', 179.7909648],
+          ['UK',  148.8537259],
+          ['Japan', 212.430699],
+          ['France',  151.3925987],
+          ['Brazil',  144.1935494],
+          ['Australia', 66.57322038],
+          ['Italy', 83.27716686],
+          ['Mexico',  63.0827057]
+        ]);
+
+
+      var ChartDiff = new google.visualization.BarChart(document.getElementById('barchart_diff'));
+
+      var options = { legend: { position: 'top' } };
+
+      var diffData = ChartDiff.computeDiff(oldData, newData);
+      ChartDiff.draw(diffData, options);
+    }
+
+      //Health diff chart to demonstrate growth
+      function Health_Growth_Chart() {
+        var oldData = google.visualization.arrayToDataTable([
+          ['Country', 'Health Spending 2010'],
+          ['USA', 2451.463421],
+          ['India', 55.91082622],
+          ['Germany', 52.3498887],
+          ['UK',  20.16409224],
+          ['Japan', 76.03930885],
+          ['France',  297.0028872],
+          ['Brazil',  175.4948523],
+          ['Australia', 96.47260679],
+          ['Italy', 39.10107169],
+          ['Mexico',  63.2036266]
+        ]);
+
+        var newData = google.visualization.arrayToDataTable([
+          ['Country', 'Health Spending 2014'],
+          ['USA', 2665.223055],
+          ['India', 77.06330278],
+          ['Germany', 399.6059729],
+          ['UK',  257.9012528],
+          ['Japan', 640.8554949],
+          ['France',  243.3761664],
+          ['Brazil',  203.5224148],
+          ['Australia', 115.8727169],
+          ['Italy', 40.767546],
+          ['Mexico',  66.42342364]
+        ]);
+
+      var HealthChartDiff = new google.visualization.BarChart(document.getElementById('health_barchart_diff'));
+
+      var options = { legend: { position: 'top' } };
+
+      var diffData = HealthChartDiff.computeDiff(oldData, newData);
+      HealthChartDiff.draw(diffData, options);
+    }
+
+
+    function eduPercentGrowthResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      var view = new google.visualization.DataView(data);
+      
+      //creating a view for percent growth
+      view.setColumns([0, 1, {
+          calc: function(dt, row){
+            return Math.floor(dt.getFormattedValue(row, 1)) + '%';
+          },
+          sourceColumn: 1,
+          type: 'string',
+          role: 'annotation'
+      }]);
+
+      var options = {
+        width: 1000,
+        height: 400,
+        bar: { groupWidth: '40%' },
+      };
+  
+      //create the chart and draw it
+      var chart8 = new google.visualization.BarChart(document.getElementById('chart8_div'));
+      chart8.draw(view, options);
+    }
+
+    function healthPercentGrowthResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      var view = new google.visualization.DataView(data);
+      
+      //creating a view for percent growth
+      view.setColumns([0, 1, {
+          calc: function(dt, row){
+            return Math.floor(dt.getFormattedValue(row, 1)) + '%';
+          },
+          sourceColumn: 1,
+          type: 'string',
+          role: 'annotation'
+      }]);
+
+      var options = {
+        width: 1000,
+        height: 400,
+        bar: { groupWidth: '40%' },
+      };
+  
+      //create the chart and draw it
+      var chart12 = new google.visualization.BarChart(document.getElementById('chart12_div'));
+      chart12.draw(view, options);
+    }
+
+    function HealthGDPpercapitaResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      
+      //set options
+      var options = {
+        width: 1000,
+        height: 400,
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '90%' },
+        hAxis: {title: 'Billions ($)'},
+        vAxis: {title: 'Country'},
+        isStacked: true
+      };
+  
+      //create the chart and draw it
+      var chart9 = new google.visualization.BarChart(document.getElementById('chart9_div'));
+      chart9.draw(data, options);
+    }
+
+    function EducationGDPpercapitaResponseHandler(response){
+      //get the data
+      var data = response.getDataTable();
+      
+      //set options
+      var options = {
+        width: 1000,
+        height: 400,
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '90%' },
+        hAxis: {title: 'Billions ($)'},
+        vAxis: {title: 'Country'},
+        isStacked: true
+      };
+  
+      //create the chart and draw it
+      var chart13 = new google.visualization.BarChart(document.getElementById('chart13_div'));
+      chart13.draw(data, options);
+    }
+      
+
+    </script>
+  </head>
+
+  <body>
+    <h1>Expenditure Report by Country</h1>
+    <p>The following report provides key insights into expenditures undertaken by ten of the G20 nations, primarily focusing on three main factors:
+      <ol>
+        <li>Education</li>
+        <li>Health</li>
+        <li>Military</li>
+      </ol>
+    </p>
+
+    <!--Divs that will hold the charts-->
+    <h3>Healthcare Expenditures by Country(2010-2014)</h3>
+    <div id="chart1_div"></div>
+    <br>
+
+    <h3>Education Expenditures by Country(2010-2014)</h3>
+    <div id="chart2_div"></div>
+    <br>
+
+    <h3>Military Expenditures by Country(2010-2014)</h3>
+    <div id="chart3_div"></div>
+    <br>
+
+    <h3>Military Expenditures Around The World(2014)</h3>
+    <div id="chart4_div"></div>
+    <br>
+
+    <h3>Gross Domestic Product (GDP) by Country(2010-2014)</h3>
+    <div id="chart5_div"></div>
+    <br>
+
+    <h3>Share of Education Expenditures in GDP(2010-2014)</h3>
+    <div id="chart6_div" style="width: 900px; height: 500px"></div>
+    <br>
+
+    <h3>Share of Health Expenditures in GDP(2010-2014)</h3>
+    <div id="chart11_div" style="width: 900px; height: 500px"></div>
+    <br>
+
+    <h3>Share of Education, Health, and Military Expenditures in GDP(2014)</h3>
+    <div id="chart7_div"></div>
+    <br>
+
+    <h3>Education Spending Growth Rate(2010-2014)</h3>
+    <div id="barchart_diff" style='width: 1000px; height: 500px;'></div>
+    <br>
+
+    <h3>Health Spending Growth Rate(2010-2014)</h3>
+    <div id="health_barchart_diff" style='width: 1000px; height: 500px;'></div>
+    <br>
+
+    <h3>Education Growth Rate In Percentage(2010-2014)</h3>
+    <div id="chart8_div"></div>
+    <br>
+
+    <h3>Health Growth Rate In Percentage(2010-2014)</h3>
+    <div id="chart12_div"></div>
+    <br>
+
+    <h3>Health vs. GDP Expenditure per capita(2014)</h3>
+    <div id="chart9_div"></div>
+    <br>
+
+    <h3>Education vs. GDP Expenditure per capita(2014)</h3>
+    <div id="chart13_div"></div>
+    <br>
+    
+  </body>
+</html>
