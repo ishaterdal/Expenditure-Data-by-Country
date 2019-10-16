@@ -9,3 +9,5 @@ Some key conclusions drawn from the analysis are:
 > The United States shows a strong and consistent record of spending across all education, healthcare, and military expenditures
 > India shows a 44% growth rate in education spending, while the United Kingdom has recorded exponential growth in healthcare spending
 > All countries have been mostly consistent in their spending for education and healthcare from 2010 to 2014, with the exception of US spiking in healthcare expenses from 2013
+
+https://zenodo.org/badge/latestdoi/215397656
